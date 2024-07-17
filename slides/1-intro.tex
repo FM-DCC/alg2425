@@ -1,0 +1,234 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{etex} % fixes new-dimension error
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx,amsmath}
+\usepackage{stmaryrd} % cf. interleave
+\usepackage{booktabs}
+\usepackage{amscd}
+\usepackage{multicol}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{alltt}
+\usepackage{proof}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage[new]{old-arrows}
+\usepackage[all]{xy}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+
+\input{macros/macros}
+%-------------- template --------------------------------------------------
+\input{macros/beamerconf}
+%----------------------------------------------------------------------------
+
+%------ using pstricks (rnode etc) ------------------------------------------
+% \usepackage{pstricks,pst-node,pst-text,pst-3d}
+
+% % context
+% \AtBeginSection[]
+% {
+%     \begin{frame}
+%         \frametitle{Table of Contents}
+%         \tableofcontents[currentsection]
+%     \end{frame}
+% }
+% \author[Renato Neves]{Renato Neves}
+% % logos of institutions
+% \titlegraphic{
+%   \begin{textblock*}{5cm}(6.7cm,7.45cm)
+%      \includegraphics[scale=0.06]{images/uminho.png}\hspace*{.85cm}~%
+%   \end{textblock*}
+%   \begin{textblock*}{5cm}(9.4cm,7.45cm)
+%     \includegraphics[scale=0.50]{images/haslab.pdf}
+%   \end{textblock*}
+% }
+% % No date
+% \date{}
+
+\begin{document}
+
+% \setLectureBasic{Cyber-Physical Computation}
+\setLecture{1}{Algorithms: Introduction}
+\frame[plain]{\titlepage}
+
+
+\section{Algorithms (CC4010)}
+
+\begin{frame}[fragile]{Algorithms (CC4010)}
+An \alert{\textbf{algorithm}} in CS is:
+
+\begin{itemize}
+  \item a \alert{method} for solving a (computational) problem
+  \begin{itemize}
+    \item given some \structure{input}
+    \item must produce some \structure{output}
+  \end{itemize}
+  \item \alert{independent} of programming languages, computational machines, etc.
+\end{itemize}
+
+\begin{columns}[T]
+\begin{column}{0.31\textwidth}
+  \begin{alertblock}{Sorting Problem}
+  \structure{Input:} a sequence $a_1, a_2, \ldots , a_n$
+  \\
+  \structure{Output:} a sorted permutation $a'_1 \leq a'_2 \leq \ldots \leq a'_n$
+  \end{alertblock}
+\end{column}\begin{column}{0.31\textwidth}
+  \begin{exampleblock}{Instance}
+  \structure{Input:} $4,1,5,3,7$
+  \\
+  \structure{Output:} $1,3,4,5,7$
+  \end{exampleblock}
+\end{column}\begin{column}{0.31\textwidth}
+  \begin{block}{Algorithm}
+  ~\\[-5pt]
+  \begin{lstlisting}[language=C++,emph={[1]arr}]
+int i, j;
+for (i=1; i<n; i++)
+  j = i-1;
+  while (j>=0 &&
+         arr[j]>arr[i])
+    arr[j+1] = arr[j];
+    j = j-1; 
+  arr[j+1] = arr[i];
+  \end{lstlisting}~\\[-20pt]
+  \end{block}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+% int i, j, min_idx;
+% for (i = 0; i < n-1; i++) {
+%   min_idx = i;
+%   for (j = i+1; j < n; j++)
+%     if (arr[j] < arr[min_idx])
+%       min_idx = j;
+%     if(min_idx != i)
+%       swap(&arr[min_idx], &arr[i]);
+% }
+
+
+% int i, j;
+% for (i = 1; i < n; i++) {
+%   j = i - 1;
+%   while (j >= 0 && arr[j] > arr[i]) {
+%       arr[j + 1] = arr[j];
+%       j = j - 1;
+%   }
+%   arr[j + 1] = arr[i];
+% }
+
+
+
+
+
+\section{Contents of the module}
+
+
+\begin{frame}{Contents of the module }
+
+  How well can we solve a \emph{problem}:
+  \begin{itemize}
+    \item is there an algorithm guaranteed to solve it in finite time? (\structure{Decidable})
+    \item if so, is it really solving the problem? (\alert{Correct})
+    \item if so, how well does it work in practice? (\alert{Feasible})
+  \end{itemize}
+
+  % We will study is a \emph{\textbf{good/better}} algorithm
+  % \begin{itemize}
+  % \item correct (do what is expected and always terminates)
+  % \item fast/faster (does not take forever...)
+  % \end{itemize}
+
+  ~\\
+
+  \frsplitt[0.44]{
+  We will be \alert{\textbf{formal}}
+  \begin{itemize}
+    \item precisely formulate concepts
+    \item proof correctness
+    \item calculate how fast
+    \item pen-and-paper (no tool support)
+  \end{itemize}
+  }{
+  We will see \alert{\textbf{examples}}
+  \begin{itemize}
+    \item Some well known algorithms
+    \item Understand how to reason about them
+  \end{itemize}
+  }
+\end{frame}
+
+
+\begin{slide}{Syllabus}
+  \frsplitdiff{0.52}{0.45}{
+    \begin{itemize}
+      \item Algorithm Correctness
+      \item Complexity: worst/best-case analysis
+      \item Asymptotic analysis
+      \item Recursive algorithms 
+      \item Average-case and randomized algorithms
+    \end{itemize}
+  }{\!\!\!\!\!
+    \begin{itemize}
+      % \item Sorting algorithms
+      \item Amortized analysis
+      \item \textcolor{black!30}{Lower bounds}
+      \item Data structures %Graph traversals and Dynamic programming
+      \item Fundamentals of NP-completeness
+      \\~
+    \end{itemize}
+  }
+\end{slide}
+
+
+\section{Logistics}
+
+\begin{frame}{Useful information}
+  Relevant class material and announcements will be posted on the website periodically
+
+  {\centering\mybox[0.8]{\url{https://cister-labs.github.io/alg2324}}
+
+  }
+
+  \alert{Lecturer}
+    \begin{itemize}
+      \item José Proença -- \url{https://jose.proenca.org}
+      \item \href{mailto:jose.proenca@fc.up.pt}{jose.proenca@fc.up.pt}
+    \end{itemize}
+           
+
+  \alert{Office hours} (please send an email the day before if you wish to meet):
+  \begin{itemize}
+    \item \emph{José Proença:} TBD %Friday afternoon
+  \end{itemize} 
+\end{frame}
+
+\begin{frame}{Assessment}
+  Assessment will consist of
+  \begin{itemize}
+  \item \textbf{30\%} (\alert{IT}) -- an individual \alert{intermediate test} in the middle of the semester ($\geq 5.5$);
+  % \begin{itemize}
+  %   \item \textbf{10 Nov 2023};
+  % \end{itemize}
+  \item \textbf{70\%} (\alert{FT}) -- a \alert{final test} at the end, during the normal exam period ($\geq 5.5$);
+  \item \textbf{100\%} (\structure{RE}) -- a \alert{global exam} at the end, during the recovery (\emph{recurso}) exam period  ($\geq 9.5$);
+  % \item \textbf{70\%} (\structure{IT2}) -- an \structure{improvement test} that can replace the final exam (if taken);
+  \end{itemize}
+
+  There will be possible evaluation periods:
+  \begin{itemize}
+    \item Normal period:
+      \mycbox[0.6]{$\alert{IT}*0.3 + \alert{FT}*0.7 ~~ (\geq 9.5)$}
+    \item Recovery period (\emph{recurso}): 
+      \mycbox[0.6]{\structure{RE} ~~ ($\geq 9.5)$}
+  \end{itemize}
+\end{frame}
+
+% \byothers{Pedro Ribeiro}{4-5}{ribeiro/0_introduction_18092018.pdf}
+\end{document}
