@@ -66,6 +66,7 @@ Students should be able to understand the relationship between algorithm design,
 
 ### Slides
  - tbd
+
 <!-- 
 1. [Introduction to the course](slides/1-intro.pdf)
 2. [Algorithm correctness](slides/2-correctness.pdf)
@@ -73,7 +74,8 @@ Students should be able to understand the relationship between algorithm design,
 4. [Average-time and probabilistic algorithms](slides/4-average-time.pdf)
 5. [Amortised analysis](slides/5-amortised.pdf)
 6. [Data structures](slides/6-data-structures.pdf)
- -->
+-->
+
 ### Main book
 
 - [Introduction to algorithms](http://catalogo.up.pt/F/-?func=find-b&local_base=FCUP&find_code=SYS&request=000287411), _Cormen Thomas H. et al._; ISBN: 9780262033848
