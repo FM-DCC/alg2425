@@ -45,7 +45,8 @@ Students should be able to understand the relationship between algorithm design,
 - __? Sep 23__: Introduction ([1-intro.pdf](slides/1-intro.pdf)) and algorithm correctness: specifying problems logically.
 - ...
 
- <!-- ([2-correctness.pdf - pages 1-18](slides/2-correctness.pdf)) -->
+<!-- ([2-correctness.pdf - pages 1-18](slides/2-correctness.pdf)) -->
+
 <!--
 - __29 Sep 23__: Algorithm correctness: partial and complete correctness ([2-correctness.pdf - pages 13-36](slides/2-correctness.pdf)); motivation for performance analysis ([3-countingsteps.pdf - pages 1-29](slides/3-countingsteps.pdf))
 - __6 Oct 23__: Algorithms complexity: best and worst case analysis. Counting steps and asymptotic notation ([3-countingsteps.pdf - pages 23-63](slides/3-countingsteps.pdf))
@@ -106,7 +107,7 @@ Students should be able to understand the relationship between algorithm design,
 
 # Teaching methods and learning activities
 
-Lectures; intermediate test (mandatory) and final test  or final exam.
+Lectures; intermediate test and final test, or final exam.
 
 The lectures mix the presentation of new material (introducing concepts, main algorithms and some results) with interactive discussion of their application when solving real problems.
 
