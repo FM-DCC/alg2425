@@ -42,7 +42,7 @@ Students should be able to understand the relationship between algorithm design,
 
 # Lectures
 
-- __? Sep 23__: Introduction ([1-intro.pdf](slides/1-intro.pdf)) and algorithm correctness: specifying problems logically.
+- __23 Sep 24__: Introduction ([1-intro.pdf](slides/1-intro.pdf)) and algorithm correctness: specifying problems logically.
 - ...
 
 <!-- ([2-correctness.pdf - pages 1-18](slides/2-correctness.pdf)) -->
@@ -65,11 +65,9 @@ Students should be able to understand the relationship between algorithm design,
 # Literature and Material
 
 ### Slides
- - tbd
-
-<!-- 
 1. [Introduction to the course](slides/1-intro.pdf)
 2. [Algorithm correctness](slides/2-correctness.pdf)
+<!-- 
 3. [Counting steps and asymptotic notation](slides/3-countingsteps.pdf)
 4. [Average-time and probabilistic algorithms](slides/4-average-time.pdf)
 5. [Amortised analysis](slides/5-amortised.pdf)
@@ -82,8 +80,8 @@ Students should be able to understand the relationship between algorithm design,
 
 ### Example Tests
 
-- [Intermediate test](tests/it2324.pdf), used on the 10th Nov 2023, covering around 30% of the topics
-- [Final test](tests/ft2324.pdf) (or improvement test), used on the 15th Dec 2023, covering the remaining 70% of the topics
+- [Intermediate test](https://cister-labs.github.io/alg2324/tests/it2324.pdf), used on the 10th Nov 2023, covering around 30% of the topics
+- [Final test](https://cister-labs.github.io/alg2324/tests/ft2324.pdf) (or improvement test), used on the 15th Dec 2023, covering the remaining 70% of the topics
 
 ### Previous years
 
@@ -187,8 +185,18 @@ can also just send an email with your questions to [José Proença](mailto:jose.
         {: .myInterests}
       {: .myMemberSubItems}
     {: .myMemberItems}
+  - 
+    + ![Pedro Ribeiro's photo](assets/img/photos/pr.jpg)
+    + <a></a>
+      * [Pedro RIbeiro](https://www.dcc.fc.up.pt/~pribeiro/)
+      * <a></a>
+        + DCC 1.47
+        + pribeiro<span>(at)</span>fc.up.pt
+        + meet: tba <!-- thu afternoon (email before) -->
+        {: .myInterests}
+      {: .myMemberSubItems}
+    {: .myMemberItems}
   {: .myMembers}
-
 
    
 
