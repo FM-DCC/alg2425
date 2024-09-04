@@ -1,0 +1,509 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{etex} % fixes new-dimension error
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx,amsmath}
+\usepackage{stmaryrd} % cf. interleave
+\usepackage{booktabs}
+\usepackage{amscd}
+\usepackage{multicol}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{alltt}
+\usepackage{proof}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage[new]{old-arrows}
+\usepackage[all]{xy}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+
+\input{macros/macros}
+%-------------- template --------------------------------------------------
+\input{macros/beamerconf}
+%----------------------------------------------------------------------------
+
+\begin{document}
+
+% \setLectureBasic{Cyber-Physical Computation}
+\setLecture{2}{Algorithm Correctness}
+\frame[plain]{\titlepage}
+
+
+\section{Motivation}
+
+\byothers{Pedro Ribeiro, slides 1}{1-5}{ribeiro/1_invariants_18092018.pdf}
+
+\section{Specification}
+
+\begin{frame}[fragile]{When is an algorithm correct?}
+~\\[-8mm]
+\doSimpleExercise{What do these functions do?}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++]
+int fa (int x, int y){
+  // pre: True
+  ...
+  // pos: (m == x || m == y) &&
+  //      (m >= x && m >= y)
+  return m;
+}
+\end{lstlisting}
+\begin{lstlisting}[language=C++]
+int fb (int x, int y){
+  // pre: x >= 0 && y >= 0
+  ...
+  // pos: x % r == 0 && y % r == 0
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++]
+int fc (int x, int y){
+  // pre: x > 0 && y > 0
+  ...
+  // pos: r % x == 0 && r % y == 0
+  return r;
+}
+\end{lstlisting}
+\begin{lstlisting}[language=C++]
+int fd (int a[], int N){
+  // pre: N>0
+  ...
+  // pos:
+  //  (forall_{0<=i<N} x<=a[i]) &&
+  //  (exists_{0<=i<N} x==a[i])
+  return x;
+}
+\end{lstlisting}
+\end{column}
+\end{columns}
+\end{frame}
+
+% fa: max
+% fb: common divisor
+% fc: common multiplier
+% fd (ff): max list
+
+% int fd (int a[], int N){
+%   // pre: N>0
+%   ...
+%   // pos: 0 <= p< N &&
+%   // forall_{0 <= i< N} a[p] <= a[i]
+%   return p;
+% }
+
+
+\begin{frame}{When is an algorithm correct?}
+  \doExercise{Formulate pre- and post-conditions:}{
+\!\texttt{int prod (int x, int y)} -- product of two integers
+\\\texttt{int gcd (int x, int y)} -- greatest common divisor of 2 positive integers
+\\\texttt{int sum (int v[], int N)} -- sum of elements in an array
+\\\texttt{int maxPOrd (int v[], int N)} -- length of the longest sorted prefix of an array
+% its a prefix and there is no next-larger
+% forall_{0<i<r} v[i-1]<=v[i])  &&  (r==N || v[r-1]>v[r])
+\\\texttt{int isSorted (int v[], int N)} --  tests if an array is sorted (growing)
+  }
+\end{frame}
+
+\begin{frame}{Hoare triples}
+  A triple $\{P\} S \{Q\}$ is a valid Hoare triple when
+  \mycbox{if $[P~holds]$ and $[S~is~executed]$ then $[Q~holds]$}
+
+  ~\\[5mm]
+
+  \doExercise{Find initial states that show these are not valid (and fix pre-cond.)}{
+  ~\\[-5mm]\begin{enumerate}
+    \item \texttt{\{True\} r=x+y; \{r$\geq$x\}} % r>=x[r/x+y] = x+y>=x (y>=0)
+    \item \texttt{\{True\} x=x+y; y=x-y; x=x-y; \{x==y\}}
+        % going bwd: {x-y == x (x==2y)}; {x==2(x-y) (x==2y)}; {x+y==2y (x==y)}}
+    \item \texttt{\{True\} x=x+y; y=x-y; x=x-y; \{x$\neq$y\}}
+    \item \texttt{\{True\} if(x>y) r=x-y; else r=y-x; \{r>0\}}
+       % x>y && x-y>0  ||  x<=y && y-x>0  (x>y || F)  (x>y)
+    \item \texttt{\{True\} while (x>0) \{y=y+1; x=x-1;\} \{y>x\}}
+       % (x>0 && y+x>0 (y>0)) || x<=0 ) -- y=10,x=1
+       % x>0 ---> y'=y+x && x'=0
+       %     --->  {y+x>0} y=y+x; {y>0} x=0 {y>x}
+  \end{enumerate}
+  }
+  % fix pre
+
+\end{frame}
+
+
+\section{Partial correctness}
+
+
+\begin{frame}{Using rules for Hoare triples}
+  $$\begin{array}{c}
+    P \Rightarrow Q[x\backslash E]
+    \\\hline
+    \{P\}~x\texttt{:=}E~\{Q\}
+    \end{array}
+    \qquad\qquad
+  \begin{array}{c}
+    P\Rightarrow \alert{I} \qquad \{\alert{I}\land c\} ~S~ \{\alert{I}\} \qquad (\alert{I} \land \lnot c)\Rightarrow Q
+    \\\hline
+    \{P\} \texttt{ while }c~S~\{Q\}
+    \end{array}$$
+
+    \begin{enumerate}
+      \item \textbf{Initialisation:} $P \Rightarrow \alert{I}$
+        \hfill\textcolor{black!40}{\emph{($P$ is the precondition right before the cycle)}}
+        \\Before the cycle the invariant holds.
+      \item \textbf{Maintenance:} $\{\alert{I} \land c\}~S~\{ \alert{I} \}$
+        \hfill\textcolor{black!40}{\emph{(or $I\land c \Rightarrow I'$, where $I'$ is the invariant after $S$)}}
+        \\Assuming the invariant holds before an iteration; it must be valid after it.
+      \item \textbf{Termination/Usefulness:} $(\alert{I} \land \lnot c) \Rightarrow Q$
+        \hfill\textcolor{black!40}{\emph{(simplify $I\land c$ until obtain $Q$)}}
+        \\After the cycle the post-condition holds.
+    \end{enumerate}
+\end{frame}
+
+\byothers{Pedro Ribeiro, slides 1}{6-11}{ribeiro/1_invariants_18092018.pdf}
+
+
+\begin{frame}[fragile]{Exercises}
+  
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++]
+int mult1 (int x, int y){
+  // pre: x>=0
+  int a, b, r;
+  a=x; b=y; r=0;
+  while (a!=0){
+    r = r+b;
+    a = a-1;
+  }
+  // pos: r == x * y 
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++]
+int mult2 (int x, int y){
+  // pre: x>=0
+  int a, b, r;
+  a=x; b=y; r=0;
+  while (a!=0) {
+    if (a%2 == 1) r = r+b;
+    a=a/2;
+    b=b*2;
+  // pos: r == x * y
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\end{columns}
+
+\only<1>{\doExercise{Check if \emph{Initialization} and \emph{Maintenance} holds for these formulae}{
+  ~\\[-5mm]\begin{columns}
+    \col[0.2]{$r==a*b$\\$a\geq 0$\\$b\geq 0$}
+    \col[0.2]{$r\geq 0$\\$a==x$\\$a\neq x$}
+    \col[0.2]{$b== 0$\\$a*b==x*y$\\$a*b+r==x*y$}
+  \end{columns}
+}}%
+\only<2>{\doSimpleExercise{Find loop invariants to prove partial correctness}}
+\end{frame}
+\exerciseBack
+
+\begin{frame}[fragile]\frametitle{Some intuition -- mult1(4,5)}
+
+\begin{columns}
+\begin{column}{0.36\textwidth}
+\begin{lstlisting}[language=C++,numbers=left]
+int mult1 (int x, int y){
+  // pre: x>=0
+  int a, b, r;
+  a=x; b=y; r=0;
+  while (a>0){
+    r = r+b;
+    a = a-1;
+  }
+  // pos: r == x * y 
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.25\textwidth}
+\footnotesize
+\begin{tabular}{c@{~~~~}ccccc}
+\toprule
+\textbf{line} & \textbf{\texttt{x}} & \textbf{\texttt{y}} &
+  \textbf{\texttt{a}} & \textbf{\texttt{b}} & \textbf{\texttt{r}} 
+\\\midrule
+\textcolor{black!50}{4} & 4 & 5 & 4 & 5 & 0 \\
+\midrule
+\textcolor{black!50}{6} & 4 & 5 & 4 & 5 & \alert{5} \\
+\textcolor{black!50}{7} & 4 & 5 & \alert{3} & 5 & 5 \\
+\midrule
+\textcolor{black!50}{6} & 4 & 5 & 3 & 5 & \alert{10} \\
+\textcolor{black!50}{7} & 4 & 5 & \alert{2} & 5 & 10 \\
+\midrule
+\textcolor{black!50}{6} & 4 & 5 & 2 & 5 & \alert{15} \\
+\textcolor{black!50}{7} & 4 & 5 & \alert{1} & 5 & 15 \\
+\midrule
+\textcolor{black!50}{6} & 4 & 5 & 1 & 5 & \alert{20} \\
+\textcolor{black!50}{7} & 4 & 5 & \alert{0} & 5 & 20 \\
+\midrule
+\textcolor{black!50}{10} & 4 & 5 & 0 & 5 & 20 \\
+\bottomrule
+\end{tabular}
+\end{column}
+
+\pause
+\col[0.32]{
+  \begin{itemize}
+    \item \texttt{x} and \texttt{y} never change
+    \item \texttt{r} grows proportionally as \texttt{a} shrinks
+    \item \alert{guess:} $\structure{I} \stackrel{\vartriangle}{~=~} \texttt{a*y} + \texttt{r} = \texttt{x*y}$
+    \pause
+    \item Need to show:\\[-8mm]
+      \begin{align*}
+        \texttt{x>=0} &\alert{\Rightarrow} \structure{I'}\\
+      %~~~~(where $I' = I[\texttt{x$\backslash$a},\texttt{b$\backslash$y},\texttt{r$\backslash$0}]$)
+        \structure{I} \land \texttt{a>0} &\alert{\Rightarrow} \structure{I'}\\
+        \structure{I} \land \lnot(\texttt{a>0}) &\alert{\Rightarrow} \texttt{r} = \texttt{x*y}
+        ~\\[-12mm]
+      \end{align*}
+    \pause
+    \item (Not all works -- enrich invariant!)
+  \end{itemize}
+}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{More exercises}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+% 0,1,2,..,n
+% n=0, r=0*...
+% n=1, r=1*2/2=1 ()
+\begin{lstlisting}[language=C++]
+int serie(int n){
+  // pre: n>=0
+  int r=0, i=1;
+  // inv: ??
+  while (i!=n+1) {
+    r = r+i; i = i+1;
+  }
+  // pos: r == n * (n+1) / 2;
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++]
+int mod(int x, int y) {
+  // pre: x>=0 && y>0
+  int r = x;
+  while (y <= r) {
+    r = r-y;
+  }
+  // pos: 0 <= r < y && exists_{q} x == q*y + r
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\end{columns}
+
+\doSimpleExercise{Find loop invariants}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Even more exercises (@home)}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,style=tiny]
+int minInd (int v[], int N) {
+  // pre: N>0
+  int i = 1, r = 0;
+  // inv: ???
+  while (i<N) {
+    if (v[i] < v[r]) r = i;
+    i = i+1; }
+  // pos: 0 <= r < N && forall_{0 <= k < N} v[r] <= v[k]
+return r; }
+
+int minimum (int v[], int N) {
+  // pre: N>0
+  int i = 1, r = v[0];
+  // inv: ???
+  while (i!=N) {
+     if (v[i] < r) r = v[i];
+     i=i+1; }
+  // pos: (forall_{0 <= k < N} r <= v[k]) &&
+  //      (exists_{0 <= p < N} r == v[p])
+  return r;
+}
+
+int sum (int v[], int N) {
+  // pre: N>0
+  int i = 0, r = 0;
+  // inv: ???
+  while (i!=N) {
+    r = r + v[i]; i=i+1;
+  }
+  // pos: r == sum_{0 <= k < N} v[k]
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,style=tiny]
+int sqr1 (int x) {
+  // pre: x>=0
+  int a = x, b = x, r = 0;
+  // inv: ??
+  while (a!=0) {
+    if (a%2 != 0) r = r + b;
+    a=a/2; b=b*2;
+  }
+  // pos: r == x^2
+  return r;
+  }
+
+int sqr2 (int x){
+  // pre: x>=0
+  int r = 0, i = 0, p = 1;
+  // inv: ??
+  while (i<x) {
+    i = i+1; r = r+p; p = p+2;
+  }
+  // pos: r == x^2
+  return r;
+}
+
+int ssearch (int x, int a[], int N){
+  // pre: N>0 &&
+  //      forall_{0 < k < N-1} a[k-1]<=a[k]
+  int p = -1, i = 0;
+  // inv: ??
+  while (p == -1 && i < N && x >= a[i]) {
+    if (a[i] == x) p = i;
+    i = i+1;
+  }
+  // pos: (p == -1 && forall_{0 <= k < N} a[k] != x) ||
+  //      ( (0 <= p < N ) && x == a[p])
+  return p;
+}
+\end{lstlisting}
+\end{column}
+\end{columns}
+\end{frame}
+
+% inv: (p == -1 && forall_{0 <= k < i} a[k] != x) ||
+%      ( (0 <= p < i ) && x == a[p])
+% init - ok
+
+% Maint - 
+%   IF p == -1 && i < N && x >= a[i] AND a[i] == x, then
+
+%   (p' == -1 && forall_{0 <= k < i'} a[k] != x) ||
+%      ( (0 <= p' < i' ) && x == a[p'])
+% = (i == -1 && forall_{0 <= k < i+1} a[k] != x) ||
+%      ( (0 <= i < i+1 ) && x == a[i]) --> 2nd part true
+
+%   IF p == -1 && i < N && x >= a[i] AND a[i] != x, then
+
+%   (p' == -1 && forall_{0 <= k < i'} a[k] != x) ||
+%      ( (0 <= p' < i' ) && x == a[p'])
+% = (p == -1 && forall_{0 <= k < i+1} a[k] != x) ||
+%      ( (0 <= p < i+1 ) && x == a[p])
+% = (p == -1 && forall_{0 <= k < i} a[k] != x && a[i]!=x) -- 1st part true
+
+% Util -
+%   IF p != -1 || i >= N || x < a[i]
+%   AND (p == -1 && forall_{0 <= k < i} a[k] != x) ||
+%      ( (0 <= p < i ) && x == a[p])
+%   THEN post?
+%     - ( (0 <= p < N ) && x == a[p]) is true when i>=N (&& i<=N inv), p!=1 is false, and x<a[i] is any
+%     - (p == -1 && forall_{0 <= k < N} a[k] != x) is true when ... (need pre cond) p!=1 is true and the rest is any... (either i=N and 3rd any, or i<N and a[k]...?)
+
+
+\section{Complete correctness}
+
+\begin{frame}{Partial/Complete correctness}
+
+~\mycbox[0.6]{Given $\{P\}~S~\{Q\}$}~\\[10mm]
+
+\begin{alertblock}{Partial correctness}
+  if $[P~holds]$ and $[S~is~executed]$ then $[Q~holds]$
+\end{alertblock}
+
+\begin{alertblock}{Complete correctness}
+  if $[P~holds]$ and $[S~is~executed]$ then $[Q~holds]$ \alert{AND $S$ terminates}
+\end{alertblock}
+
+\pause
+~\mycbox[0.8]{\textbf{Enough to show the existence of a \alert{loop variant}}}
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Loop variant}
+  
+  Technique that measures the distance between the current state and the final state.
+
+  \begin{block}{A loop variant $\structure{V}$ is an \textbf{integer expression} s.t.}
+    \begin{itemize}
+      \item is positive in the beginning of each round ($c \land I ~\Rightarrow~ \structure{V}>0$)
+      \item decreases in every round ($c \land I ~\Rightarrow~ \structure{V} > \structure{V'}$)
+    \end{itemize}
+  \end{block}
+
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++]
+r=x;
+q=0;
+while (y <= r) {
+  r = r-y;
+  q = q+1;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+  \begin{itemize}
+    \item $\structure{V} = r-y$ is not a good variant
+    \item \only<1>{...}\only<2->{$\structure{V} =r-y+1$ is a good variant}
+      \only<3->{
+      \\[3mm] $~~~y\leq r \alert{\Rightarrow} \structure{V} > 0$ at each round
+      % V>0 <=> r-y+1 > 0 <=> y<r+1 <=> y<=r (OK)
+      \\ $~~~\structure{V} > \structure{V'}$ after each round
+    }
+
+  \end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Exercises}
+
+\begin{lstlisting}[language=C++]
+int sum(int v[], int N) {
+  int i = 0, r = 0;
+  while (i!=N) {
+    // variant: ???
+    r = r + v[i];
+    i=i+1;
+  }
+  return r;
+}
+\end{lstlisting}
+
+\doSimpleExercise{Find variant above}
+~\\[-10mm]
+\doSimpleExercise{Find variants of the loops in previous exercises\\(when searching for invariants)}
+
+
+\end{frame}
+
+\end{document}
