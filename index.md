@@ -8,7 +8,7 @@ layout: home
 
 This course is about designing algorithms for computational problems, and how to think clearly about analyzing correctness and running time. The main goal is to provide the intellectual tools needed for designing and analyzing your own algorithms for new problems you need to solve in the future.
 
-The official plan of this course is hosted in FCUP [here](https://sigarra.up.pt/fcup/pt/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=528072).
+The official plan of this course is hosted in FCUP [here](https://sigarra.up.pt/fcup/pt/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=547968).
 
 # Learning outcomes and competences
 
@@ -23,6 +23,7 @@ Students should be able to understand the relationship between algorithm design,
 - Recursive algorithms
 - Amortized analysis
 - Data structures - Collections and Dictionaries
+
 <!-- - Graph traversals and Dynamic programming -->
 <!-- - Fundamentals of NP-completeness -->
 
@@ -86,7 +87,7 @@ Students should be able to understand the relationship between algorithm design,
 
 ### Previous years
 
-- Content from 2023/24 [https://cister-labs.github.io/alg2324/](https://cister-labs.github.io/alg2324/) 
+- Content from 2023/24 (very similar to this year) [https://cister-labs.github.io/alg2324/](https://cister-labs.github.io/alg2324/) 
 - Slides from [Pedro Ribeiro](https://www.dcc.fc.up.pt/~pribeiro/) (2018/19): [https://www.dcc.fc.up.pt/~pribeiro/aulas/alg1819/material.html#slides](https://www.dcc.fc.up.pt/~pribeiro/aulas/alg1819/material.html#slides)
 - Content from [Ana Paula Tomás]() (2021/22): [https://www.dcc.fc.up.pt/~apt/Aulas/ALGO2223.html](https://www.dcc.fc.up.pt/~apt/Aulas/ALGO2223.html)
 - Slides from similar courses:
