@@ -322,6 +322,23 @@
 }
 
 
+%%%% REDOING splits
+% Spliting frames in 2 columns
+\newcommand{\splittwo}[4]{ 
+  \begin{columns}[T]% align columns
+  \begin{column}{#1\textwidth} #3 \end{column} ~~~
+  \begin{column}{#2\textwidth} #4 \end{column} \end{columns}
+}
+% splitting in 3 columns
+\newcommand{\splitthree}[6]{
+  \begin{columns}[T] % align columns
+  \begin{column}{#1\textwidth} #4 \end{column} ~~~
+  \begin{column}{#2\textwidth} #5 \end{column} ~~~
+  \begin{column}{#3\textwidth} #6 \end{column} \end{columns}
+}
+
+
+
 \newcommand{\typerule}[4][]{\ensuremath{\begin{array}[#1]{c}\textsf{\scriptsize ({#2})} \\#3 \\\hline\raisebox{-3pt}{\ensuremath{#4}}\end{array}}}
 \newcommand{\styperule}[3][]{\ensuremath{\begin{array}[#1]{c} #2 \\[0.5mm]\hline\raisebox{-4pt}{\ensuremath{#3}}\end{array}}}
 \newcommand{\shrk}{\vspace{-3mm}}

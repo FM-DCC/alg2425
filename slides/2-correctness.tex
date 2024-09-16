@@ -122,12 +122,20 @@ int fd (int a[], int N){
         % going bwd: {x-y == x (x==2y)}; {x==2(x-y) (x==2y)}; {x+y==2y (x==y)}}
     \item \texttt{\{True\} x=x+y; y=x-y; x=x-y; \{x$\neq$y\}}
     \item \texttt{\{True\} if(x>y) r=x-y; else r=y-x; \{r>0\}}
-       % x>y && x-y>0  ||  x<=y && y-x>0  (x>y || F)  (x>y)
+        % opt 1: y-x > 0 && x<=y  ~~~ y>x
+        % opt 2: x-y > 0 && x>y   ~~~ x>y
+        % hence opt1 || opt2  ~~~ x!=y
     \item \texttt{\{True\} while (x>0) \{y=y+1; x=x-1;\} \{y>x\}}
        % (x>0 && y+x>0 (y>0)) || x<=0 ) -- y=10,x=1
        % x>0 ---> y'=y+x && x'=0
        %     --->  {y+x>0} y=y+x; {y>0} x=0 {y>x}
   \end{enumerate}
+  %%%% y>x
+  % opt1: x<=0 && y>x
+  % opt2: y+1>x-1 && x=1  ~~ y>-1 && x=1
+  % opt3: y+2>x-2 && x=2  ~~ y>-2 && x=2
+  % opt4: y+3>x-3 && x=3  ~~ y>-3 && x=3 --- y>-x && x>0 ~~~ x>0
+  % hence: op1 || x>0  (note: y>0 is sufficient, but not the most generic)
   }
   % fix pre
 
@@ -157,13 +165,43 @@ int fd (int a[], int N){
       \item \textbf{Maintenance:} $\{\alert{I} \land c\}~S~\{ \alert{I} \}$
         \hfill\textcolor{black!40}{\emph{(or $I\land c \Rightarrow I'$, where $I'$ is the invariant after $S$)}}
         \\Assuming the invariant holds before an iteration; it must be valid after it.
-      \item \textbf{Termination/Usefulness:} $(\alert{I} \land \lnot c) \Rightarrow Q$
+      \item \textbf{Usefulness \emph{(Termination)}:} $(\alert{I} \land \lnot c) \Rightarrow Q$
         \hfill\textcolor{black!40}{\emph{(simplify $I\land c$ until obtain $Q$)}}
         \\After the cycle the post-condition holds.
     \end{enumerate}
 \end{frame}
 
-\byothers{Pedro Ribeiro, slides 1}{6-11}{ribeiro/1_invariants_18092018.pdf}
+\byothers{Pedro Ribeiro, slides 1}{6-10}{ribeiro/1_invariants_18092018.pdf}
+
+\begin{frame}[t]\frametitle{How to show that an invariant is really one?}
+
+  \noindent
+  \splitthree{0.30}{0.36}{0.32}{
+    \begin{exampleblock}{Initialization}
+      The invariant is true prior to the first iteration of the loop
+      \\~\\~\\[4mm]
+      $P \Rightarrow \alert{I}$
+      \\[3mm]\emph{in the slide before:}
+      \\$Q \Rightarrow \alert{P}$
+    \end{exampleblock}
+  }{
+    \begin{block}{Maintenance}
+      If it is true before an iteration of the loop, it remains true before the next iteration
+      \\~\\~\\[4mm]
+      $I\land c \Rightarrow \alert{I'}$
+      \\[3mm]\emph{in the slide before:}
+      \\$P\land B \Rightarrow \alert{P}$ after executing $S$
+    \end{block}
+  }{
+    \begin{alertblock}{Usefulness \emph{(termination)}}
+      When the loop terminates, the invariant gives us a useful property that helps show that the algorithm is correct
+      \\[4mm]
+      $(I \land \lnot c) \Rightarrow \alert{Q}$
+      \\[3mm]\emph{in the slide before:}
+      \\$P\land \lnot B \Rightarrow \alert{R}$
+    \end{alertblock}
+  }
+\end{frame}
 
 
 \begin{frame}[fragile]{Exercises}
