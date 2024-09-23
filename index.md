@@ -43,10 +43,8 @@ Students should be able to understand the relationship between algorithm design,
 
 # Lectures
 
-- __23 Sep 24__: Introduction ([1-intro.pdf](slides/1-intro.pdf)) and algorithm correctness: specifying problems logically.
-- ...
-
-<!-- ([2-correctness.pdf - pages 1-18](slides/2-correctness.pdf)) -->
+- __23 Sep 24__: Introduction ([1-intro.pdf](slides/1-intro.pdf)) and algorithm correctness: specifying problems logically ([2-correctness.pdf - pages 1-12](slides/2-correctness.pdf))
+- __30 Sep 23__: Algorithm correctness: partial and complete correctness ([2-correctness.pdf - pages 13-36](slides/2-correctness.pdf)); ...
 
 <!--
 - __29 Sep 23__: Algorithm correctness: partial and complete correctness ([2-correctness.pdf - pages 13-36](slides/2-correctness.pdf)); motivation for performance analysis ([3-countingsteps.pdf - pages 1-29](slides/3-countingsteps.pdf))
@@ -68,9 +66,9 @@ Students should be able to understand the relationship between algorithm design,
 ### Slides
 1. [Introduction to the course](slides/1-intro.pdf)
 2. [Algorithm correctness](slides/2-correctness.pdf)
+3. [Counting steps and asymptotic notation](slides/3-countingsteps.pdf)
 
 <!-- 
-3. [Counting steps and asymptotic notation](slides/3-countingsteps.pdf)
 4. [Average-time and probabilistic algorithms](slides/4-average-time.pdf)
 5. [Amortised analysis](slides/5-amortised.pdf)
 6. [Data structures](slides/6-data-structures.pdf)

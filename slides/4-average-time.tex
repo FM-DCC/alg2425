@@ -1,0 +1,693 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{etex} % fixes new-dimension error
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx,amsmath}
+\usepackage{stmaryrd} % cf. interleave
+\usepackage{booktabs}
+\usepackage{amscd}
+\usepackage{multicol}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{alltt}
+\usepackage{proof}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage[new]{old-arrows}
+\usepackage[all]{xy}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+
+\input{macros/macros}
+%-------------- template --------------------------------------------------
+\input{macros/beamerconf}
+%----------------------------------------------------------------------------
+
+\begin{document}
+
+\setLecture{4}{Average Time and Probabilistic Programs}
+\frame[plain]{\titlepage}
+
+
+\begin{frame}[t]\frametitle{Overview}
+
+
+  \begin{itemize}
+    {\color{black!25}
+    \item Measuring {precisely} performance of algorithms
+    \item Measuring {asymptotically} performance of algorithms
+    \item Analysing {recursive} functions}
+    \item Measuring \structure{precisely} the \alert{average time} of algorithms
+    {\color{black!25}
+    \item Possibly: sorting algorithms \texttt{bubbleSort}, \texttt{swapSort}, \texttt{insertionSort}, \texttt{mergeSort}, \texttt{quickSort}}
+    \item Next: analysis of sequences of operations (\alert{amortised analysis})
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}%\frametitle{title}
+  \centering
+
+  \includegraphics[width=\textwidth]{images/phd072508s}
+  \\
+  {\footnotesize \textcolor{gray}{(from PhD comics: https://phdcomics.com/comics/archive.php?comicid=1047)}}
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Recall goal}
+
+\begin{lstlisting}[language=C++,linewidth=50mm]
+int count = 0;
+for (int i=0; i<n; i++)
+  if (v[i] == 0) count++
+\end{lstlisting}    
+
+\frsplitt{
+  \begin{block}{RAM}
+  \begin{itemize}
+    \item worst-case: $T(n) = 5+5n$
+    \item best-case: $T(n) = 5+4n$
+  \end{itemize}  
+  \end{block}
+}{
+  \begin{alertblock}{\#array-accesses + \#count-increments}
+  \begin{itemize}
+    \item worst-case: $T(n) = 2n$
+    \item best-case: $T(n) = n$
+    \item \alert{
+      average-case: $\overline{T}(n) = n + \sum_{0\leq r < n}P(v[r]=0)$}
+  \end{itemize}  
+  \end{alertblock}
+}
+\end{frame}
+
+
+\section{Preliminaries: series}
+
+
+\begin{frame}\frametitle{Recall arithmetic series}
+    
+\begin{align*}
+  \alert{\sum_{i=1}^n i} &~=~ 1 + 2 + \ldots + n ~=~ \structure{\frac{n(n+1)}{2}}
+  \\
+  \alert{\sum_{i=a}^b i} &~=~ a + (a+1) + \ldots + b ~=~
+    \structure{\frac{(a-b+1)(a+b)}{2}}
+\end{align*}
+
+~\\[8mm]
+
+\begin{block}{Intuition}
+\centering
+\big[number of elements\big] $\times$ \big[middle value\big]  
+\end{block}
+\end{frame}
+
+\begin{frame}\frametitle{Recall geometric series I} 
+\begin{align*}
+  \alert{\sum_{i=0}^n x^i} &~=~ 1 + x + x^2 + \ldots + x^n ~=~
+      \structure{\frac{x^{n+1}-1}{x-1}}
+\end{align*}
+
+~\\[2mm]
+
+\begin{block}{Proof}
+\centering
+Let $\structure{S}=\alert{\sum_{i=0}^n x^i}$. Then:
+$$\structure{S}\times x ~=~ x + x^2 + \ldots + x^{n+1}$$
+Hence we know $\Big[(\structure{S}\times x)-\structure{S} ~=~ x^{n+1}-1\Big]$.
+\\
+Simplifying we get $\Big[\structure{S} ~=~ \frac{x^{n+1}-1}{x-1}\Big]$.
+\end{block}
+\end{frame}
+
+\begin{frame}\frametitle{Recall geometric series II}
+\begin{align*}
+  \alert{\sum_{i=1}^n i \times x^{i-1}} &~=~ x + (2\times x^2) + \ldots + (n\times x^n) ~=~
+      \structure{\frac{n\times x^{n+1}-(n+1)\times x^n +1}{(x-1)^2}}
+\end{align*}
+
+~\\[2mm]
+
+\begin{block}{Proof}
+\centering
+Recall $\Big[S ~=~ \sum_{i=1}^n x^i ~=~ \frac{x^{n+1}-1}{x-1}\Big]$.
+Derive both:
+\begin{align*}
+ S'
+   ~~\alert{=}~~ (1 + x + x^2 + \ldots + x^n)'
+  &~~\alert{=}~~ 0 + 1 + 2x + \ldots + n\times x^{n-1}
+   ~~\alert{=}~~\alert{\sum_{i=1}^n i \times x^{i-1}}
+\\
+\left(\frac{x^{n+1}-1}{x-1}\right)'
+  &~~\alert{=}~~
+   \structure{\frac{n\times x^{n+1}-(n+1)\times x^n +1}{(x-1)^2}}
+\end{align*}
+\end{block}
+\end{frame}
+
+
+\section{Calculating average cases}
+
+
+\begin{frame}\frametitle{Average case}
+    
+The average time to execute an algorithm is given as the \alert{expected value} for its execution, assuming that each run $r$ has a cost $c_r$ and a probability $p_r$.
+
+\begin{block}{Expected cost}
+  $$\overline{T}(N) = \sum_r p_r \times c_r$$
+\end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Example: Linear search}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,emph={lsearch}]
+int lsearch(int x, int N, int v[])
+{
+  // pre: sorted array v
+  int i;
+  i =0;
+  while ((i<N) && (v[i] < x))
+    i ++;
+  if ((i==N) || (v[i] != x))
+    return (-1);
+  else return i;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\only<1-2>{
+\begin{itemize}
+  \item Count array accesses
+  \item Best case: $T(N) = 2$
+  \item Worst case: $T(N) = N+1$
+  \item Average case: $\overline{T}(N) = \ldots$
+  \pause
+  \begin{itemize}
+    \item assuming array with uniformly distributed values and a random \texttt{x}
+    \item same probability to do $0,1,\ldots,N-1$ cycle iterations
+    \item Hence: \alert{$N$ different runs, each}
+    \begin{itemize}
+      \item \structure{probability:} $1/N$
+      \item \structure{cost:} \#cycles + 1
+    \end{itemize}
+    \end{itemize}
+\end{itemize}
+}\only<3->{
+  \begin{align*}
+    \structure{\overline{T}(N)} &= \sum_{i=1}^N \frac{1}{N} \times (i+1)
+    \only<4->{
+    \\&= \frac{1}{N} \times \sum_{i=1}^N (i+1)
+    \\&= \frac{1}{N} \times \sum_{i=2}^{N+1} i
+    \\&= \frac{1}{N} \times \frac{N\times(N+3)}{2}
+    \\&= \alert{\frac{N+3}{2}}}
+  \end{align*}
+}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Binary search}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,emph={bsearch}]
+int bsearch(int x, int N, int v[])
+{
+  int i,s,m;
+  i=0; s=N-1;
+  while (i<s){
+    m= (i+s)/2;
+    if (v[m] == x) i = s = m;
+    else if (v[m] > x) s = m-1;
+    else i = m+1;
+  }
+  if ((i>s) || (v[i] != x))
+    return (-1);
+  else return i;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\doExercise{Calculate best/worst/average cases}{
+  \begin{itemize}
+    \item Count array accesses / nr. cycles
+    \item Best case: $T(N) = \alert{?}$
+    \item Worst case: $T(N) = \alert{?}$
+    \item Average case: $\overline{T}(N) = \alert{?}$
+  \end{itemize}
+}
+% count number of times the cycle can go - worst log2(N) (each 2n+1 accesses)
+% average case, in N runs
+%  1 run cost 1 (1 cycle, prob 1/N), 2 runs at cost 2 (2 cycles, prob 2/N), 4 runs at cost 3 (3 cycles, prob 4/N)...
+%  k runs.... 
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}\frametitle{Binary search: Intuition for worst case}    
+  \begin{itemize}
+    % \item In an array of size $N$, there are N+1 cases (finding at a given position, or not finding).
+    \item Example: \structure{N=15, worst case}
+    \begin{itemize}
+      \item \alert{1st cycle:} check \texttt{v[N/2]} (7 remaining)
+      \item \alert{2nd cycle:} check \texttt{v[N/4]} (or \texttt{v[3N/4]} -- 3 remaining)
+      \item \alert{3rd cycle:} check \texttt{v[N/8]} (or \texttt{v[3N/8]}... -- 1 remaining)
+      \item \alert{after:} check \texttt{v[N/16]} (or \texttt{v[3N/16]}...) if equal to \texttt{x}
+    \end{itemize}
+    \item N=15, (3 cycles) $\to$ 4 ``cycles''
+    \item In general: $c$ cycles for $2^c-1$ elements
+    \item ... i.e., $N = 2^{c}-1 \structure{~~\equiv~~} c = log_2(N+1)$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}\frametitle{Binary search: Intuition for average case}
+  \begin{itemize}
+    \item In an array of size $N$, there are N+1 cases (finding at a given position, or not finding).
+    \item Assume N+1 cases have equal probability (!)
+    \item Example: \structure{N=15}
+    \begin{itemize}
+      \item \alert{1 cycle:} find at \texttt{v[N/2]}  -- prob. $\frac{1}{N+1}$
+      \item \alert{2 cycles:} find at \texttt{v[N/4]} or \texttt{v[3N/4]} -- prob. $\frac{2}{N+1}$
+      \item \alert{3 cycles:} find at \texttt{v[N/8]} or (...) -- prob. $\frac{4}{N+1}$
+      \item \alert{after:} find (or not) at \texttt{v[N/16] (..)} -- prob. $\frac{8}{N+1}$
+    \end{itemize}
+    \item N=15, average cycles: $1\times\frac{1}{N+1} + 2\times\frac{2}{N+1} + 3\times\frac{4}{N+1} + 
+            4\times\frac{8}{N+1}$
+    \item In general: $1\times\frac{1}{N+1} + \ldots + log_2(N+1)\times\frac{2^{log_2(N+1)-1}}{N+1}$
+    \item ... i.e.,
+      $\alert{\overline T(N))}
+      = \structure{\sum_{i=1}^{log_2(N+1)} i\times \frac{2^{i-1}}{N+1}}
+      = \structure{\ldots}$
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Two's complement}
+\centering
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,emph={twoComplement}]
+void twoComplement(char b[], int N)
+{
+  int i = N-1;
+  while (i>0 && !b[i])
+    i --;
+  i --;
+  while (i >=0) {
+    b[i] = !b[i];
+    i--;
+  }
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\doExercise{Calculate best/worst/average cases}{
+  \begin{itemize}
+    \item Count nr. \emph{bit updates}
+    \item Best case: $T(N) = \alert{?}$
+    \item Worst case: $T(N) = \alert{?}$
+    \item Average case: $\overline{T}(N) = \alert{?}$
+  \end{itemize}
+}
+%...
+\end{column}
+\end{columns}
+
+\only<2->{\wrap{
+\texttt{twoComplement(0001) = 1111} \emph{~~~~-- ~~1 vs -1}
+\\
+\texttt{twoComplement(0010) = 1110} \emph{~~~~-- ~~2 vs -2}
+\\
+\texttt{twoComplement(0011) = 1101} \emph{~~~~-- ~~3 vs -3}
+\\
+\texttt{twoComplement(01010000) = 10110000}
+}}
+
+\end{frame}
+
+% 1/2 prob of best case (N-1 updates)
+% 1/2^2 prob of N-2 updates
+% 1/2^3 prob of N-3 updates
+% ...
+% 1/2^N prob of N-N updates (0 updates)
+% =
+% sum_i=1^N (N-i)/2^i
+% = sum(N/2^i) - sum(i/2^i)...
+
+
+
+% \begin{frame}\frametitle{Exercises}
+%     ...
+% \end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Exercises}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,emph={maxgrow,grow}]
+int maxgrow(int v[], int N) {
+  int r = 1, i = 0, m;
+  while (i<N-1) {
+    m = grow(v+i, N-i);
+    if (m>r) r = m;
+    i++;
+  }
+  return r;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,emph={grow}]
+int grow(int v[], int N) {
+  int i;
+  for (i=1; i<N; i++)
+    if (v[i] < v[i-1]) break;
+  return i;
+}
+
+\end{lstlisting}
+\end{column}
+\end{columns}
+
+~\\[-6mm]
+\doSimpleExercise{How many comparison of array elements exist in the average case for \texttt{grow}?
+\\
+(assume \texttt{v[i]<v[i-1]} has 50\% chances of succeeding)}
+~\\[-11mm]
+\doSimpleExercise{How many comparison of array elements exist in the average case for \texttt{maxgrow}?}
+
+% Worst case when i+=m replaces i++?
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Exercises @home}
+\centering
+
+\begin{lstlisting}[language=C++,emph={iSort,swap}]
+void iSort(int v[], int N){
+  int i, j;
+  for (i=1; i<N; i++)
+    for (j=i; j>0 && v[j-1]>v[j];
+         j--)
+      swap(v,j,j-1);
+}
+\end{lstlisting}
+
+\doSimpleExercise{How many comparison of array elements exist in the average case?
+\\(as before, assume \texttt{v[j-1]>v[j]} has 50\% chances of succeeding)}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Quicksort analysis}
+    
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,emph={partition,quickSort,swap}]
+int partition(int N, int v[]){
+  int i, j=0;
+  for (i=0; i<N-1; i++)
+    if (v[i]<v[N-1])
+      swap(v,i,j++);
+  swap(v,N-1,j);
+  return j ;
+}
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}[language=C++,emph={partition,quickSort}]
+void quickSort(int N, int v[]){
+  int p;
+  if (N>1) {
+    p = partition(N, v);
+    quickSort(v, p);
+    quickSort(v+p+1, N-p-1);
+  }
+}
+\end{lstlisting}
+\end{column}
+\end{columns}
+
+(See animation at \url{https://visualgo.net/en/sorting})
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Quicksort analysis}
+    
+  \begin{block}{Partition}
+  \begin{itemize}
+    \item Comparisons: $T_{\texttt{partition}}(N) = N-1$ in any case
+    \item Swaps: $T_{\texttt{partition}}(N) = N$ in the worst case, $1$ in the best case
+  \end{itemize}  
+  \end{block}
+
+  \begin{block}{Quicksort (comparisons)}
+  $$T(N) = \left\{
+    \begin{array}{ll}
+      0 & \text{if }N=1
+      \\
+      N-1 + T(p) + T(N-1-p) & \text{if }N>1\text{, where }0\leq p < N
+    \end{array}
+  \right.$$
+  % \begin{itemize}
+  %   \item $T_\texttt{QS}(N)$ in any case
+  % \end{itemize}  
+  \end{block}
+\end{frame}
+
+\begin{frame}\frametitle{Quicksort -- worst case}
+
+  \begin{block}{Quicksort (comparisons) in general}
+  $$T(N) = \left\{
+    \begin{array}{ll}
+      0 & \text{if }N=1
+      \\
+      N-1 + T(p) + T(N-1-p) & \text{if }N>1\text{, where }0\leq p < N
+    \end{array}
+  \right.$$
+  \end{block}
+
+  \begin{alertblock}{Quicksort (comparisons) when $p=0$}
+  $$T(N) = \left\{
+    \begin{array}{ll}
+      0 & \text{if }N=1
+      \\
+      N-1 + T(N-1) & \text{if }N>1
+    \end{array}
+  \right.$$
+  \end{alertblock}
+
+  \pause~\\[-8mm]
+  \begin{align*}
+    T(N) &= (N-1)+(N-2)+\ldots+2+1
+       \\&= \sum_{i=1}^{N-1} i ~=~ \frac{N(N-1)}{2} ~=~ \Theta(N^2)
+  \end{align*}
+\end{frame}
+
+
+
+\begin{frame}\frametitle{Quicksort -- best case}
+
+  \begin{block}{Quicksort (comparisons) in general}
+  $$T(N) = \left\{
+    \begin{array}{ll}
+      0 & \text{if }N=1
+      \\
+      N-1 + T(p) + T(N-1-p) & \text{if }N>1\text{, where }0\leq p < N
+    \end{array}
+  \right.$$
+  \end{block}
+
+  \begin{exampleblock}{Quicksort when $p=\frac{N-1}{2}$}
+  $$T(N) = \left\{
+    \begin{array}{ll}
+      0 & \text{if }N=1
+      \\
+      N-1 + 2T(\frac{N-1}{2}) & \text{if }N>1
+    \end{array}
+  \right.$$
+  \end{exampleblock}
+
+  \pause~\\[-8mm]
+  \begin{align*}
+    T(N) &= {??? (use~recurrence~trees)}
+       \\&= \Theta(N \times log(N))
+  \end{align*}
+\end{frame}
+%% ON BOARD:
+% draw recurrence tree for N=15
+% T(15) = 1*14   i=1
+% 2T(7) = 2*6    i=2
+% 4T(3) = 4*2    i=3
+% 8T(1) = 0 (drop)
+% --
+% T(N) = sum_i=1^M x*y
+% --
+% 1. M? (here 3)
+%   15 = 2^4-1 = 2^(3+1)-1
+%   N = 2^(M+1)-1
+%   M = log(N+1)-1
+% --
+% 2. x?
+%   1, 2, 4...
+%   x = 2^(i-1)
+% 3. y?
+%   14, 6, 2
+%   2^4-2, 2^3-2, 2^2-2
+%   y = 2^(M-i+1)-2
+% --
+% solve T(N)
+% T(N)
+%  = sum_i=1^M (2^(i-1)-1)*(2^(M-i+1)-2) --- lazy: just "sum"
+%  = sum 2^(i-1)*(2^(M-i+1)-2) - (2^(M-i+1)-2)
+%  = sum 2^(i-1)*(2^(M-i+1)) - 2*2^(i-1) - 2^(M-i+1) + 2
+%  = sum 2^(i-1+M-i+1) - 2*2^(i-1) - 2^(M-i+1) + 2
+%  = sum 2^M - 2*2^(i-1) - 2^(M-i+1) + 2
+%  = M2^M - sum 2*2^(i-1) - sum 2^(M-i+1) + 2M
+%  =  -2*sum 2^(i-1) - sum 2^(M-i+1) + M*(2^M + 2)
+
+% sum_i=1^M 2^(i-1)
+% = sum_i=0^(M-1) 2^(i-2)
+% = sum_i=0^(M-1) 2^i * 2^(-2)
+% = 1/4sum_i=0^(M-1) 2^i
+% = 1/4 (2^M - 1)
+
+% sum_i=1^M 2^(M-i+1)  -- M-1,M-2,... M-M(0)
+% = sum_i=0^(M-1) 2^(i+1)
+% = sum_i=0^(M-1) 2^i * 2
+% = 2*sum_i=0^(M-1) 2^i
+% = 2* (2^M - 1)
+
+% hence
+%  = -1/2*2^M + 1/2 - 2*2^M + 2 + M*(2^M + 2)
+%  = Theta(M*2^M)
+%  = Theta((log(N+1)-1) * 2^(log(N+1)-1))
+%  = Theta(log(N) * 2^log(N))
+%  = Theta(N*log(N))
+
+
+\begin{frame}\frametitle{Quicksort -- average case}
+
+  \begin{block}{Quicksort (comparisons) in general}
+  $$T(N) = \left\{
+    \begin{array}{ll}
+      0 & \text{if }N=1
+      \\
+      N-1 + T(p) + T(N-1-p) & \text{if }N>1\text{, where }0\leq p < N
+    \end{array}
+  \right.$$
+  \end{block}
+
+  \begin{alertblock}{Quicksort when $p$ can be any with equal probability}
+  $$\overline{T}(N) = \left\{
+    \begin{array}{ll}
+      0 & \text{if }N=1
+      \\
+      N-1 + \sum_{p=0}^{N-1} \frac{1}{N}(\overline{T}(p)+\overline{T}(N-p-1)) & \text{if }N>1
+    \end{array}
+  \right.$$
+  \end{alertblock}
+
+  \pause~\\[-13mm]
+  \begin{align*}
+    \sum_{p=0}^{N-1} & \frac{1}{N}(\overline{T}(p)+\overline{T}(N-p-1))
+      ~~=~~\frac{1}{N}\times \sum_{p=0}^{N-1}\overline{T}(p) +
+         \frac{1}{N}\times \sum_{p=0}^{N-1}\overline{T}(N-p-1)
+      \\&=~\frac{1}{N}\times \sum_{p=0}^{N-1}\overline{T}(p) +
+         \frac{1}{N}\times \sum_{p=0}^{N-1}\overline{T}(p)
+      ~~=~~\frac{2}{N}\times \sum_{p=0}^{N-1}\overline{T}(p)
+  \end{align*}
+\end{frame}
+
+\begin{frame}\frametitle{Quicksort -- average case (some math magic)}
+  \centering
+
+  \only<1>{  
+  $\structure{\overline{T}(N)}
+      \alert{~=~} N-1 + \sum_{p=0}^{N-1} \frac{1}{N}(\overline{T}(p)+\overline{T}(N-p-1))
+      \alert{~=~} \structure{N-1 + \frac{2}{N}\times \sum_{p=0}^{N-1}\overline{T}(p)}$
+
+  \begin{block}{Multiplying by $N$}
+    $N\times \overline{T}(N) \alert{~=~}
+       N\times(N-1) + 2\times \sum_{p=0}^{N-1}\overline{T}(p)$
+  \end{block} 
+
+  \begin{block}{Applying for $N-1$}
+    $(N-1)\times \overline{T}(N-1) \alert{~=~}
+       (N-1)\times(N-2) + 2\times \sum_{p=0}^{N-2}\overline{T}(p)$
+  \end{block} 
+  }
+
+  \begin{block}{Subtracting each side}
+    $ N\times\overline{T}(N) - (N-1)\times \overline{T}(N-1) \alert{~=~}$
+    \\~~~$
+       N\times(N-1) + 2\times \sum_{p=0}^{N-1}\overline{T}(p) - 
+       (N-1)\times(N-2) - 2\times \sum_{p=0}^{N-2}\overline{T}(p)$
+  \end{block} 
+
+  \only<2->{
+  \begin{block}{Simplifying}
+    $ \overline{T}(N) \alert{~=~}
+       \left(\frac{2N-1}{N}\right) + \left(\frac{N+1}{N}\right)\times
+        \overline{T}(N-1)$
+    \\
+    $~~~~~~~\alert{~=~} ...$
+    \\
+    $~~~~~~~\alert{~=~} \Theta(N\times log(N))$
+  \end{block} 
+  }
+
+  \only<3->{
+  \alert{Randomised Quicksort} -- the version usually used -- uses a \structure{random pivot} when partitioning.
+  }
+
+\end{frame}
+
+\section{Randomised Algorithms}
+
+\byothers{Pedro Ribeiro, slides 4}{9-13}{ribeiro/4_probabilistic_22102018.pdf}
+
+\begin{frame}\frametitle{Las Vegas vs. Monte Carlo}
+
+\begin{itemize}
+  \item QuickSort always returns a \alert{correct result} (a sorted array) but its \structure{runtime is a random variable} (with $\mathcal{O}(n\text{ log }n)$ in expectation)
+  \item Some randomized algorithms are \alert{not guaranteed to be correct}, but their \structure{runtime is fixed}.
+\end{itemize}
+
+\begin{block}{Las Vegas Algorithms}
+Randomized algorithms that always output the correct answer, and whose runtimes are random variables.
+\end{block}
+
+\begin{alertblock}{Monte Carlo Algorithms}
+Randomized algorithms that always terminate in a given time bound, but are correct with at least some (high) probability.
+\end{alertblock}
+
+\end{frame}
+
+
+% \begin{frame}[fragile]\frametitle{Exercises}
+  
+% \begin{lstlisting}[language=C++,emph={elem,swap}]
+% int elem(int x, ABin a){
+%   while (a != NULL && a->value != x)
+%     if (x < a->value) a = a->left;
+%     else              a = a->right;
+%   return (a!=NULL);
+% }
+% \end{lstlisting}
+
+% \doSimpleExercise{Recall the insertion sort from before. What is the average time wrt \textbf{swaps}, assuming 50\% chances that \texttt{v[j-1]>v[j]} succeeds?}
+% \end{frame}
+
+% \section{Motivation}
+% \byothers{Charles E. Leiserson}{3-19}{Cormen_Algorithms_Slides.pdf}
+% \byothers{Pedro Ribeiro, slides 2}{1-2}{ribeiro/2_asymptoticanalysis_02102018.pdf}
+
+\end{document}
