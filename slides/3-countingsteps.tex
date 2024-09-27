@@ -114,7 +114,7 @@ for (int i=0; i<n; i++)
 \begin{frame}[fragile]\frametitle{Exercises}
   
 \begin{columns}
-\begin{column}{0.48\textwidth}
+\begin{column}{0.44\textwidth}
 \begin{lstlisting}[language=C++,emph={bubbleSort,swap}]
 void bubbleSort(int v[], int N){
   int i, j;
@@ -125,15 +125,15 @@ void bubbleSort(int v[], int N){
 }
 \end{lstlisting}
 \end{column}
-\begin{column}{0.48\textwidth}
+\begin{column}{0.52\textwidth}
 \begin{lstlisting}[language=C++,emph={iSort,swap}]
 void iSort(int v[], int N){
   int i, j;
   for (i=1; i<N; i++)
-    for (j=i; j>0 && v[j-1]>v[j];
-         j--)
+    for (j=i; j>0 && v[j-1]>v[j]; j--)
       swap(v,j,j-1);
 }
+$~$
 \end{lstlisting}
 \end{column}
 \end{columns}

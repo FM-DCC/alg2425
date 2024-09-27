@@ -139,6 +139,8 @@ int fd (int a[], int N){
   }
   % fix pre
 
+  Finding weakest preconditions online: \href{https://cister-labs.github.io/whilelang-scala/?\%7Btrue\%7D\%20x=x+y;\%20y=x-y;\%20x=x-y;\%20\%7Bx=y\%7D}{\alert{https://cister-labs.github.io/whilelang-scala}}
+
 \end{frame}
 
 
@@ -146,13 +148,21 @@ int fd (int a[], int N){
 
 
 \begin{frame}{Using rules for Hoare triples}
-  $$\begin{array}{c}
+  $$
+  \structure{\begin{array}{c}
+    P ~\Rightarrow~ Q\text{ after doing }S
+    \\\hline
+    \{P\}~S~\{Q\}
+  \end{array}}
+  $$
+  $$
+  \textsc{[seq]}\begin{array}{c}
     P \Rightarrow Q[x\backslash E]
     \\\hline
     \{P\}~x\texttt{:=}E~\{Q\}
-    \end{array}
-    \qquad\qquad
-  \begin{array}{c}
+  \end{array}
+  \qquad\qquad
+  \textsc{[while]}\begin{array}{c}
     P\Rightarrow \alert{I} \qquad \{\alert{I}\land c\} ~S~ \{\alert{I}\} \qquad (\alert{I} \land \lnot c)\Rightarrow Q
     \\\hline
     \{P\} \texttt{ while }c~S~\{Q\}
@@ -299,7 +309,7 @@ int mult1 (int x, int y){
   \begin{itemize}
     \item \texttt{x} and \texttt{y} never change
     \item \texttt{r} grows proportionally as \texttt{a} shrinks
-    \item \alert{guess:} $\structure{I} \stackrel{\vartriangle}{~=~} \texttt{a*y} + \texttt{r} = \texttt{x*y}$
+    \item \alert{guess:} $\structure{I} \stackrel{\vartriangle}{~=~} \texttt{a*b} + \texttt{r} = \texttt{x*y}$
     \pause
     \item Need to show:\\[-8mm]
       \begin{align*}
