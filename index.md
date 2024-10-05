@@ -101,6 +101,7 @@ Students should be able to understand the relationship between algorithm design,
 
 - [The algorithm design manual;](https://www.algorist.com) _Skiena Steven S._;  ISBN: 978-1-84800-069-8
 - [Competitive Programming 3: The New Lower Bound of Programming Contests](https://sites.google.com/site/stevenhalim/); Steven Halim and Felix Halim; 2023
+- [Rigorous Software Development -- An Introduction to Program Verification](https://link.springer.com/book/10.1007/978-0-85729-018-2); _José Bacelar Almeida, Maria João Frade, Jorge Sousa Pinto, Simão Melo de Sousa_ 2011; ISBN: 978-0-85729-017-5
 - [Algorithms](http://catalogo.up.pt/F/-?func=find-b&local_base=FCUP&find_code=SYS&request=000237593); _Sedgewick Robert_; ISBN: 0-201-06673-4
 - [Algorithm Design](http://www.cs.princeton.edu/~wayne/kleinberg-tardos/); _Jon Kleinberg and Éva Tardos;_ 2005. ISBN: 978-0321295354
 - [Tópicos Avançados em Algoritmos](http://www.dcc.fc.up.pt/~acm/aulas/aa/t1.pdf); _Armando Matos;_ DCC/FCUP, 2008 (In Portuguese - some lecture notes)
