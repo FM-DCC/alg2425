@@ -46,6 +46,9 @@ Students should be able to understand the relationship between algorithm design,
 - __23 Sep 24__: Introduction ([1-intro.pdf](slides/1-intro.pdf)) and algorithm correctness: specifying problems logically ([2-correctness.pdf - pages 1-12](slides/2-correctness.pdf))
 - __30 Sep 24__: Algorithm correctness: partial and complete correctness ([2-correctness.pdf - pages 13-36](slides/2-correctness.pdf))
 - __7 Out 24__: Motivation for performance analysis; Algorithms complexity: best and worst case analysis; Counting steps ([3-countingsteps.pdf - pages 1-43](slides/3-countingsteps.pdf))
+- __14 Out 24__: Counting steps; Asymptotic complexity; Starting to analyse recursive algorithms ([3-countingsteps.pdf - pages 44-..](slides/3-countingsteps.pdf))
+
+
 
 <!--
 - __29 Sep 23__: Algorithm correctness: partial and complete correctness ([2-correctness.pdf - pages 13-36](slides/2-correctness.pdf)); motivation for performance analysis ([3-countingsteps.pdf - pages 1-29](slides/3-countingsteps.pdf))
