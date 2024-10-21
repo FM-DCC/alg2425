@@ -93,7 +93,7 @@ for (int i=0; i<n; i++)
   \alert{\sum_{i=1}^n i} &~=~ 1 + 2 + \ldots + n ~=~ \structure{\frac{n(n+1)}{2}}
   \\
   \alert{\sum_{i=a}^b i} &~=~ a + (a+1) + \ldots + b ~=~
-    \structure{\frac{(a-b+1)(a+b)}{2}}
+    \structure{\frac{(b-a+1)(a+b)}{2}}
 \end{align*}
 
 ~\\[8mm]
@@ -156,7 +156,7 @@ Derive both:
 The average time to execute an algorithm is given as the \alert{expected value} for its execution, assuming that each run $r$ has a cost $c_r$ and a probability $p_r$.
 
 \begin{block}{Expected cost}
-  $$\overline{T}(N) = \sum_r p_r \times c_r$$
+  $$\overline{T}(N) = \sum_{r\in Runs} p_r \times c_r$$
 \end{block}
 \end{frame}
 
