@@ -47,6 +47,7 @@ Students should be able to understand the relationship between algorithm design,
 - __30 Sep 24__: Algorithm correctness: partial and complete correctness ([2-correctness.pdf - pages 13-36](slides/2-correctness.pdf))
 - __7 Out 24__: Motivation for performance analysis; Algorithms complexity: best and worst case analysis; Counting steps ([3-countingsteps.pdf - pages 1-43](slides/3-countingsteps.pdf))
 - __14 Out 24__: Counting steps; Asymptotic complexity; Starting to analyse recursive algorithms ([3-countingsteps.pdf - pages 44-77](slides/3-countingsteps.pdf))
+- __21 Out 24__: Solving recursive algorithms with unfolding, substitution, and recurrences ([3-countingsteps.pdf - pages 78-98](slides/3-countingsteps.pdf))
 - ...
 - __18 Nov 24__: Intermediate test (30%): 14h00-15h00 (Specification, Correction, Worst/Best time analysis, Asymptotic analysis);
 
