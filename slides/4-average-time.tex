@@ -18,6 +18,7 @@
 \usepackage[all]{xy}
 \usepackage{pgfplots}
 \usepackage{textcomp}
+\usepackage{fontawesome5}
 
 \input{macros/macros}
 %-------------- template --------------------------------------------------
@@ -406,11 +407,12 @@ void iSort(int v[], int N){
 
 
 \begin{frame}[fragile]\frametitle{Quicksort analysis}
+\centering
     
 \begin{columns}
 \begin{column}{0.48\textwidth}
 \begin{lstlisting}[language=C++,emph={partition,quickSort,swap}]
-int partition(int N, int v[]){
+int partition(int v[], int N){
   int i, j=0;
   for (i=0; i<N-1; i++)
     if (v[i]<v[N-1])
@@ -422,10 +424,10 @@ int partition(int N, int v[]){
 \end{column}
 \begin{column}{0.48\textwidth}
 \begin{lstlisting}[language=C++,emph={partition,quickSort}]
-void quickSort(int N, int v[]){
+void quickSort(int v[], int N){
   int p;
   if (N>1) {
-    p = partition(N, v);
+    p = partition(v, N);
     quickSort(v, p);
     quickSort(v+p+1, N-p-1);
   }
@@ -435,6 +437,8 @@ void quickSort(int N, int v[]){
 \end{columns}
 
 (See animation at \url{https://visualgo.net/en/sorting})
+\\[3mm]
+(Note: pivot is different: first in animation, last in here)
 
 \end{frame}
 
@@ -462,7 +466,7 @@ void quickSort(int N, int v[]){
   \end{block}
 \end{frame}
 
-\begin{frame}\frametitle{Quicksort -- worst case}
+\begin{frame}\frametitle{Quicksort -- worst case \faFrown[regular]}
 
   \begin{block}{Quicksort (comparisons) in general}
   $$T(N) = \left\{
@@ -493,7 +497,7 @@ void quickSort(int N, int v[]){
 
 
 
-\begin{frame}\frametitle{Quicksort -- best case}
+\begin{frame}\frametitle{Quicksort -- best case \faSmile[regular]}
 
   \begin{block}{Quicksort (comparisons) in general}
   $$T(N) = \left\{
@@ -573,7 +577,7 @@ void quickSort(int N, int v[]){
 %  = Theta(N*log(N))
 
 
-\begin{frame}\frametitle{Quicksort -- average case}
+\begin{frame}\frametitle{Quicksort -- average case \faFlushed[regular]}
 
   \begin{block}{Quicksort (comparisons) in general}
   $$T(N) = \left\{
@@ -647,6 +651,53 @@ void quickSort(int N, int v[]){
   \only<3->{
   \alert{Randomised Quicksort} -- the version usually used -- uses a \structure{random pivot} when partitioning.
   }
+
+\end{frame}
+
+\section{Algorithms so far}
+
+\begin{frame}[t]\frametitle{Algorithms seen so far}
+
+\vspace*{-5mm}
+\splitthree{0.32}{0.32}{0.32}{
+  \begin{alertblock}{Correctness}
+    \begin{itemize}
+    \item arithmetic series
+    \item mod
+    \item mult1, mult2
+    \item array sum 
+    \end{itemize}
+  \end{alertblock}
+ }{
+  \begin{alertblock}{Counting (loops)}
+    \begin{itemize}
+    \item insertion\structure{Sort}
+    \item bubble\structure{Sort}
+    \item mult1,2 (again)
+    \item maxgrow + grow
+    \item maxsum + sum (@home)
+    \end{itemize}
+  \end{alertblock}
+ }{
+  \begin{alertblock}{Counting (recursive)}
+    \begin{itemize}
+    \item bsearch (binary search)
+    \item merge\structure{Sort}
+    \item maxSumR + hanoi
+    \item heightBT
+    \end{itemize}
+  \end{alertblock}
+  % ~\\
+  \begin{alertblock}{Average time (loops)}
+    \begin{itemize}
+    \item lsearch (linear search)
+    \item bsearch (binary search)
+    \item twoComplement
+    \item maxgrow + grow
+    \item quick\structure{Sort}
+    \end{itemize}
+  \end{alertblock}
+}
 
 \end{frame}
 
