@@ -54,6 +54,7 @@ Students should be able to understand the relationship between algorithm design,
 - __11 Nov 24__: Recursive algorithms: the master theorem ([3-countingsteps.pdf - pages 98-113](slides/3-countingsteps.pdf)); introduction to average case analysis ([4-average-time.pdf - pages 1-17](slides/4-average-time.pdf))
 - __18 Nov 24__: Intermediate test (30%) in __room FC6.140 @ 14h00-15h00__ (specification, correction, worst/best time analysis, and asymptotic analysis); average case analysis ([4-average-time.pdf - pages 17-19](slides/4-average-time.pdf))
 - __25 Nov 24__: Average case analysis: more exercises; analysis of the quick-sort algorithm; Las Vegas vs. Monte Carlo algorithms ([4-average-time.pdf - pages 20-42](slides/4-average-time.pdf)); introduction to amortised analysis ([4-average-time.pdf - pages 20-42](slides/5-amortised.pdf))
+- __2 Dec 24__: Amortised analysis: revisiting the aggregate and accounting method; using the potential method ([5-amortised.pdf - pages 18-26](slides/5-amortised.pdf))
 - ...
 
 
