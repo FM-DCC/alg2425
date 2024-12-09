@@ -185,7 +185,7 @@ struct list *next;
   % add, remove, append, concat
 \begin{columns}
 \begin{column}{.48\textwidth}
-\begin{lstlisting}[language=C++, emph={prev,LInt},morekeywords={malloc}]
+\begin{lstlisting}[language=C, emph={prev,LInt},morekeywords={malloc}]
 LInt add (int x, LInt l) {
   LInt new =
     malloc(sizeof(struct list));
@@ -200,7 +200,7 @@ LInt add (int x, LInt l) {
 \end{column}
 \begin{column}{.50\textwidth}
 %
-\begin{lstlisting}[language=C++, emph={prev,LInt},morekeywords={malloc}]
+\begin{lstlisting}[language=C, emph={prev,LInt},morekeywords={malloc}]
 LInt dda (int x, LInt l) {
   LInt pt = l;
   while (pt != NULL) pt = pt->next;
@@ -219,7 +219,7 @@ LInt dda (int x, LInt l) {
 
 \begin{frame}[fragile]\frametitle{Sequences -- Recall linked lists (fixed)}
   
-\begin{lstlisting}[language=C++,emph={list,LInt}]
+\begin{lstlisting}[language=C,emph={list,LInt}]
 typedef struct list {
   int value ;
   struct list *next;
@@ -229,9 +229,10 @@ typedef struct list {
   % add, remove, append, concat
 \begin{columns}
 \begin{column}{.48\textwidth}
-\begin{lstlisting}[language=C++, emph={prev,LInt},morekeywords={malloc}]
+\begin{lstlisting}[language=C, emph={prev,LInt},morekeywords={malloc}]
 LInt add (int x, LInt l) {
-  LInt new = malloc(sizeof(struct list ));
+  LInt new =
+    malloc(sizeof(struct list));
   if (new != NULL) {
     new->value=x;
     new->next=l ;
@@ -243,7 +244,7 @@ return new;
 \end{column}
 \begin{column}{.50\textwidth}
 %
-\begin{lstlisting}[language=C++, emph={prev,LInt},morekeywords={malloc}]
+\begin{lstlisting}[language=C, emph={prev,LInt},morekeywords={malloc}]
 LInt dda (int x, LInt l) {
   LInt pt = l, prev;
   while (pt != NULL) {
@@ -265,6 +266,20 @@ LInt dda (int x, LInt l) {
   \texttt{lookup, concat, reverse}?
 }
 \end{frame}
+
+\begin{frame}[t]\frametitle{Sequences -- reverse analysis}
+
+  \begin{block}{Idea for \texttt{reverse1}}
+    \begin{enumerate}
+      \item reverse the tail
+      \item add head to the end
+    \end{enumerate}
+      \texttt{reverse1([])$~~~~~~~~~~$= []}
+    \\\texttt{reverse1([x1,x2,...])$~$= dda(x1,reverse1([x2,...]))}
+  \end{block}
+
+\end{frame}
+
 
 \begin{frame}[fragile]\frametitle{Sequences -- reverse analysis}
   
@@ -291,7 +306,7 @@ LInt reverse1 (LInt l) {
 LInt reverse2 (LInt l) {
   LInt r, tmp;
   r = NULL;
-  while (l !=NULL) {
+  while (l != NULL) {
     tmp=l; l=l->next;
     tmp->next=r; r=tmp;
   }
