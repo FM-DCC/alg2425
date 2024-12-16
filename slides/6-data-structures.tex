@@ -24,6 +24,17 @@
 \input{macros/beamerconf}
 %----------------------------------------------------------------------------
 
+\newcommand{\mytree}[2][]{\begin{tikzpicture}%
+ [level distance=8mm,
+   level 1/.style={sibling distance=22mm},
+   level 2/.style={sibling distance=14mm},
+   level 3/.style={sibling distance=7mm},
+  every node/.style={circle,inner sep=-3pt,minimum width=6mm,draw=black,fill=white},#1]
+% level 1/.style={sibling distance=20mm,nodes={fill=red!45}},
+  #2
+  \end{tikzpicture}}
+
+
 \begin{document}
 
 \setLecture{6}{Data Structures}
@@ -177,8 +188,9 @@ void differenceMSet(MSetInt, MSetInt,
 \begin{frame}[fragile]\frametitle{Sequences -- Recall linked lists}
   
 \begin{lstlisting}[language=C++,emph={list,LInt}]
-typedef struct list { int value ;
-struct list *next;
+typedef struct list {
+  int value ;
+  struct list *next;
 } *LInt;
 \end{lstlisting}
 
@@ -267,15 +279,23 @@ LInt dda (int x, LInt l) {
 }
 \end{frame}
 
-\begin{frame}[t]\frametitle{Sequences -- reverse analysis}
+\begin{frame}[fragile]\frametitle{Sequences -- reverse analysis}
 
-  \begin{block}{Idea for \texttt{reverse1}}
+  \begin{lstlisting}[language=C,emph={list,LInt}]
+  typedef struct list {
+    int value ;
+    struct list *next;
+  } *LInt;
+  \end{lstlisting}
+  % ~\\[-7mm]
+
+  \begin{block}{Idea for \texttt{reverseRec}}
     \begin{enumerate}
       \item reverse the tail
       \item add head to the end
     \end{enumerate}
-      \texttt{reverse1([])$~~~~~~~~~~$= []}
-    \\\texttt{reverse1([x1,x2,...])$~$= dda(x1,reverse1([x2,...]))}
+      \texttt{reverseRec([])$~~~~~~~~~~$= []}
+    \\\texttt{reverseRec([x1,x2,...])$~$= dda(x1,reverseRec([x2,...]))}
   \end{block}
 
 \end{frame}
@@ -285,12 +305,12 @@ LInt dda (int x, LInt l) {
   
 \begin{columns}
 \begin{column}{.48\textwidth}
-\begin{lstlisting}[language=C++, emph={reverse1,reverse2,LInt}]
-LInt reverse1 (LInt l) {
+\begin{lstlisting}[language=C++, emph={reverseRec,reverseLoop,LInt}]
+LInt reverseRec (LInt l) {
   LInt r, pt;
   if (l==NULL || l->next==NULL) r=l;
   else {
-    r = pt = reverse1 (l->next);
+    r = pt = reverseRec (l->next);
     while (pt->next != NULL)
       pt = pt->next;
     pt->next = l;
@@ -302,8 +322,8 @@ LInt reverse1 (LInt l) {
 \end{column}
 \begin{column}{.50\textwidth}
 %
-\begin{lstlisting}[language=C++, emph={reverse1,reverse2,LInt}]
-LInt reverse2 (LInt l) {
+\begin{lstlisting}[language=C++, emph={reverseRec,reverseLoop,LInt}]
+LInt reverseLoop (LInt l) {
   LInt r, tmp;
   r = NULL;
   while (l != NULL) {
@@ -320,7 +340,7 @@ LInt reverse2 (LInt l) {
 ~\\[-6mm]
 \doSimpleExercise{What is the complexity of each \texttt{reverse}?}
 ~\\[-12mm]
-\doSimpleExercise{What is the (informal) loop invariant in \texttt{reverse2}, assuming:
+\doSimpleExercise{What is the (informal) loop invariant in \texttt{reverseLoop}, assuming:
 \\~~~ \texttt{pre:l==l$_0$} and \texttt{post:r==rev(l$_0$)}?}
 % r==l0?  rev(l)++r == rev(l0)
 \end{frame}
@@ -338,7 +358,7 @@ LInt reverse2 (LInt l) {
 \end{frame}
 
 
-\section{Buffers (stacks and queueus)}
+\section{Buffers (stacks and queues)}
 
 
 \begin{frame}[fragile]\frametitle{Stacks}
@@ -415,7 +435,7 @@ void doubleArray (Stack *s){
 \end{column}
 \begin{column}{.50\textwidth}
 %
-\begin{lstlisting}[language=C++, emph={push,pop,doubleArray,realloc}]
+\begin{lstlisting}[language=C++, emph={push,pop,doubleArray,halfArray,realloc}]
 int pop (Stack *s){
   // reduces by half when only
   // 25% capacity is used
@@ -545,6 +565,76 @@ typedef struct prQueue {
 \end{frame}
 
 
+% \newcommand{\mytree}[1]{\begin{tikzpicture}%
+%  [level distance=8mm,
+%    level 1/.style={sibling distance=22mm},
+%    level 2/.style={sibling distance=14mm},
+%    level 3/.style={sibling distance=7mm},
+%   every node/.style={circle,inner sep=-3pt,minimum width=6mm,draw=black,fill=white}]
+% % level 1/.style={sibling distance=20mm,nodes={fill=red!45}},
+%   #1
+%   \end{tikzpicture}}
+
+
+\begin{frame}[t]\frametitle{Priority queue -- example}
+  \centering
+  \begin{exampleblock}{Tree example}
+    \centering
+    \texttt{size=17~}%
+    \textcolor{black!40}{%
+    \texttt{~~0~~1~~2~~3~~4~~5~~6~~7~~8~~9 10 11 12 13 14 15 16~}}
+    \\\texttt{values:~~}%
+    \texttt{[10 15 11 16 22 35 20 21 23 34 37 80 43 22 25 24 28]}
+  \end{exampleblock}
+  \bigskip
+  \wrap{\mytree[level 1/.style={sibling distance=28mm}]{\node {10}
+    child {node {15}
+      child {node {16} child {node{21} child {node{24}}
+                                     child {node{28}}}
+                      child {node{23}}}
+      child {node {22} child {node{34}}
+                      child {node{37}}}
+    }
+    child {node {11}
+      child {node{35} child {node{80}}
+                     child {node{43}}}
+      child {node{20} child {node{22}}
+                     child {node{25}}}
+    }
+  ;}}
+
+\end{frame}
+
+\begin{frame}[t]\frametitle{Priority queue -- just the indices}
+  \centering
+  \begin{exampleblock}{Tree example}
+    \centering
+    \texttt{size=17~}%
+    \textcolor{black!40}{%
+    \texttt{~~0~~1~~2~~3~~4~~5~~6~~7~~8~~9 10 11 12 13 14 15 16~}}
+    \\\texttt{values:~~}%
+    \texttt{[10 15 11 16 22 35 20 21 23 34 37 80 43 22 25 24 28]}
+  \end{exampleblock}
+  \bigskip
+  \wrap{\mytree[level 1/.style={sibling distance=28mm}]{\node{\textcolor{black!50}{0}}
+    child {node{\textcolor{black!50}{1}}
+      child {node{\textcolor{black!50}{3}} child {node{\textcolor{black!50}{7}} child {node{\textcolor{black!50}{15}}}
+                                     child {node{\textcolor{black!50}{16}}}}
+                      child {node{\textcolor{black!50}{8}}}}
+      child {node{\textcolor{black!50}{4}} child {node{\textcolor{black!50}{9}}}
+                      child {node{\textcolor{black!50}{10}}}}
+    }
+    child {node{\textcolor{black!50}{2}}
+      child {node{\textcolor{black!50}{5}} child {node{\textcolor{black!50}{11}}}
+                     child {node{\textcolor{black!50}{12}}}}
+      child {node{\textcolor{black!50}{6}} child {node{\textcolor{black!50}{13}}}
+                     child {node{\textcolor{black!50}{14}}}}
+    }
+  ;}}
+
+\end{frame}
+
+
 \begin{frame}\frametitle{Exercises}
   
   \doExercise{Using the previous example, provide an expression to:}{
@@ -552,15 +642,15 @@ typedef struct prQueue {
     \!\!1. calculate the index of the \emph{left} tree given a position \texttt{i} % 2i+1
     \\2. calculate the index of the \emph{right} tree given a position \texttt{i} % 2i+2
     \\3. calculate the index of the \emph{parent} of a given a position \texttt{i} % (i-1)/2
-    \\4. calculate the index of the index of the \emph{first leaf}
+    \\4. calculate the index of the \emph{first leaf}
   }
 
   \doExercise{Define \texttt{bubbleUp(int i, int h[])}}{
-    Fixes a min-heap by swapping the \texttt{i}-th element with the parent while needed.
+    Used to add elements. Fixes a min-heap by swapping the \texttt{i}-th element with the parent while needed.
   }
 
   \doExercise{Define \texttt{bubbleDown(int i, int h[], int N)}}{
-    Fixes a min-heap by swapping the \texttt{i}-th element with one of the children while needed.
+    Used to remove elements. Fixes a min-heap by swapping the \texttt{i}-th element with one of the children while needed.
   }
 \end{frame}
 
@@ -578,13 +668,13 @@ typedef struct prQueue {
 
 \section{Dictionaries}
 
-\begin{frame}\frametitle{Hashtables}
+\begin{frame}\frametitle{Hashtables \structure{(hashsets)}}
 
-\alert{Dictionary:} maps \structure{keys} to \structure{values}
+\alert{Dictionary:} maps \alert{keys} to \alert{values} \structure{(hashset: just the keys)}
 \\
 (Keys are unique)
 
-\begin{block}{Idea}
+\begin{block}{Idea - using a \alert{hash} function}
   - \alert{\emph{Magic} function \texttt{hash}} converts a key into an \structure{index} (number).
   \\- This \structure{index} points to the position of an array where the value \emph{should} be found.
   \\- Usually the size of the array is \alert{less} than the set of possible keys, i.e., \structure{\texttt{hash} is not injective}.
@@ -594,7 +684,7 @@ typedef struct prQueue {
 \end{frame}
 
 
-\begin{frame}\frametitle{Hashtables: Closed and Open Addressing}
+\begin{frame}\frametitle{Hashtables: Closed and Open Addressing \structure{(also hashsets))}}
 
 \begin{columns}
   \begin{column}{0.48\textwidth}
@@ -667,7 +757,7 @@ typedef Bucket
 \end{column}
 \end{columns}
 
-\doSimpleExercise{Implement \texttt{lookup}}
+\doSimpleExercise{Implement \texttt{hash} and \texttt{lookup}}
   % int p = hash (k,HSIZE); Bucket it;
   % for (it = h[p]; it!=NULL && it->key!=k; it=it->next);
   % if (it!=NULL) { *i = it->info; return 1;}
@@ -878,16 +968,6 @@ Delete     & ${\Theta(\log n)}$ & ${\mathcal{O}(\log n)}$
 \end{tabular}
 \end{frame}
 
-
-\newcommand{\mytree}[1]{\begin{tikzpicture}%
- [level distance=8mm,
-   level 1/.style={sibling distance=22mm},
-   level 2/.style={sibling distance=14mm},
-   level 3/.style={sibling distance=7mm},
-  every node/.style={circle,inner sep=-3pt,minimum width=6mm,draw=black,fill=white}]
-% level 1/.style={sibling distance=20mm,nodes={fill=red!45}},
-  #1
-  \end{tikzpicture}}
 
 \begin{frame}\frametitle{AVL trees}
     \centering
@@ -1158,12 +1238,12 @@ Delete     & ${\Theta(\log n)}$ & ${\mathcal{O}(\log n)}$
   \item \alert{\textbf{4.}} All down paths from a root have equal black-height
 \end{itemize}%
 \end{column}
-\begin{column}{.65\textwidth}
+\begin{column}{.66\textwidth}
   ~\\[-3mm]
-  \begin{exampleblock}{Lemma: size of a subtree -- $size(x) \geq 2^{bh(x)-1}$}
+  \begin{exampleblock}{Lemma: size of a subtree -- $size(x) \geq 2^{bh(x)}-1$}
   \begin{itemize}
     \item $bh(x)$ is the black-height of a node $x$
-    \item \alert{base case:} $2^{bh(\alert{\textsc{null}})-1} = 2^0-1 = size(\alert{\textsc{null}}) $
+    \item \alert{base case:} $2^{bh(\alert{\textsc{null}})}-1 = 2^0-1 = size(\alert{\textsc{null}}) $
     \item \structure{inductive case:} For each child $c$ of $x$:
     \\~~~~~$bh(c)=bh(x)$ or $bh(c)=bh(x)-1$.
     \\
@@ -1172,6 +1252,28 @@ Delete     & ${\Theta(\log n)}$ & ${\mathcal{O}(\log n)}$
           \\&=~ 2^{bh(x)-1+1}-2+1 ~=~ 2^{bh(x)-1}
       \end{array}$
   \end{itemize}
+% EXPERIENTS
+% P(x): size(x) >=  2^{bh(x)} - 1 ??
+% x is not a leaf, then:
+%  - bh(child) can be up to bh(x)
+%  - then size(x) can  be up to 1 + size(child1) + size(child2)
+%  -              must be up to 1 + (size(child1)-1) + (size(child2)-1)
+%  - by HI can  be up to 1 + 2*(2^bh(x) - 1) = 1 + 2^(bh(x)+1) - 2 = 2^(bh(x)+1) - 1
+%          must be up to 1 + 2*(2^bh(x)-1-1) = 1 + 2^(bh(x)+1) - 4 = 2^(bh(x)+1) - 3 >= 2^bh(x)-1
+% ---
+%  - want to show size(x) >= 2*(2^bh(ch))+1
+%  - want to show size(x) >= 2*(2^bh(x)-1)+1 and 2*(2^bh(x))+1 (enough the first)
+%  - enough to show size(x) >= 2*(2^bh(x)-1)+1
+%  -                        = 2^{bh(x)+1}-3
+%  - by HI: size(ch) >= 2^bh(ch) - 1
+%  - if bh(ch) = bh(x)   then size(ch) >= 2^bh(x)-1 ==> size(x)==2*size(ch)+1 >=2^(bh(x)+1)-2+1 
+%  - if bh(ch) = bh(x)-1 then size(ch) >= 2^bh(x)-2 ==> size(x)>=size(ch)>=2^bh(x)-1
+
+%  - size(x) >= 2\times(\structure{(2^{bh(x)}-1)-1}) + 1
+%             = 2^{bh(x)+1}-3 >= 2^{bh(x)-1}
+%             // 2-3 >= 2^-1 -- FALSE
+
+% 
   \end{exampleblock}
   ~\\[-9mm]
   \begin{exampleblock}{Theorem: Height of a RB tree is $\mathcal{O}(\log n)$}
@@ -1181,7 +1283,7 @@ Delete     & ${\Theta(\log n)}$ & ${\mathcal{O}(\log n)}$
       \item $\Rightarrow ~ bh(h)\geq h/2$
       \item $\Rightarrow ~ size(x) \geq 2^{h/2} -1
           % \\$
-            ~\Leftrightarrow ~ h \leq 2\log n + 1 \in \mathcal{O}(\log n)$
+            ~\Leftrightarrow ~ h \leq 2\log (n + 1) \in \mathcal{O}(\log n)$
     \end{itemize}
   \end{exampleblock}
 \end{column}
