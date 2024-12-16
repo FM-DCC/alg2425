@@ -50,7 +50,7 @@ Students should be able to understand the relationship between algorithm design,
 - __21 Out 24__: Solving recursive algorithms with unfolding, substitution, and recurrences ([3-countingsteps.pdf - pages 78-98](slides/3-countingsteps.pdf))
 - __21 Out 24__: Solving recursive algorithms with unfolding, substitution, and recurrences ([3-countingsteps.pdf - pages 78-98](slides/3-countingsteps.pdf))
 - __28 Out 24__: Teaching interruption
-- __4 Nov 24__: Dynamic programming, by [Pedro Ribeiro](https://www.dcc.fc.up.pt/~pribeiro/)
+- __4 Nov 24__: Dynamic programming: motivation, concepts and methodology; optimal substructure and overlapping subproblems; examples and variations: longest increasing subsequence, 0-1 Knapsack and edit distance [slides/dp.pdf](slides/dp.pdf)
 - __11 Nov 24__: Recursive algorithms: the master theorem ([3-countingsteps.pdf - pages 98-113](slides/3-countingsteps.pdf)); introduction to average case analysis ([4-average-time.pdf - pages 1-17](slides/4-average-time.pdf))
 - __18 Nov 24__: Intermediate test (30%) in __room FC6.140 @ 14h00-15h00__ (specification, correction, worst/best time analysis, and asymptotic analysis); average case analysis ([4-average-time.pdf - pages 17-19](slides/4-average-time.pdf))
 - __25 Nov 24__: Average case analysis: more exercises; analysis of the quick-sort algorithm; Las Vegas vs. Monte Carlo algorithms ([4-average-time.pdf - pages 20-42](slides/4-average-time.pdf)); introduction to amortised analysis ([4-average-time.pdf - pages 20-42](slides/5-amortised.pdf))
