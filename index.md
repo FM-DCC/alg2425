@@ -84,7 +84,7 @@ Students should be able to understand the relationship between algorithm design,
 4. [Average-time and probabilistic algorithms](slides/4-average-time.pdf)
 5. [Amortised analysis](slides/5-amortised.pdf)
 6. [Data structures](slides/6-data-structures.pdf)
-7. [Dynamic programming](slides/dp.pdf)
+7. [Dynamic programming](slides/dp.pdf) (by Pedro Ribeiro)
 
 <!-- 
 4. [Average-time and probabilistic algorithms](slides/4-average-time.pdf)
