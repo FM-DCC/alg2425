@@ -56,8 +56,9 @@ Students should be able to understand the relationship between algorithm design,
 - __25 Nov 24__: Average case analysis: more exercises; analysis of the quick-sort algorithm; Las Vegas vs. Monte Carlo algorithms ([4-average-time.pdf - pages 20-42](slides/4-average-time.pdf)); introduction to amortised analysis ([4-average-time.pdf - pages 20-42](slides/5-amortised.pdf))
 - __2 Dec 24__: Amortised analysis: revisiting the aggregate and accounting method; using the potential method ([5-amortised.pdf - pages 18-26](slides/5-amortised.pdf))
 - __9 Dec 24__: Amortised analysis: revision and exercises ([5-amortised.pdf - pages 26-46](slides/5-amortised.pdf)); Data structures ([6-data-structures.pdf - pages 1-7](slides/6-data-structures.pdf))
-- __16 Dec 24__: ...
-
+- __16 Dec 24__: Data structures: sets, multisets, stacks, (priority) queues, and briefly hashtables ([6-data-structures.pdf - pages 7-31](slides/6-data-structures.pdf))
+ 
+<!-- Until -- Brief overview of hashtables with open and closed addressing -->
 
 <!--
 - __29 Sep 23__: Algorithm correctness: partial and complete correctness ([2-correctness.pdf - pages 13-36](slides/2-correctness.pdf)); motivation for performance analysis ([3-countingsteps.pdf - pages 1-29](slides/3-countingsteps.pdf))
